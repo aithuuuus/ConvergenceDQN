@@ -135,7 +135,8 @@ def make_env(
     task='ALE/Pong-v5', 
     skip_frame=3, 
     frame=84,
-    obs_merge=3
+    obs_merge=3, 
+    **kwargs, 
 ):
     env = gym.make(task)
     env = MaxAndSkip(env, skip=skip_frame)

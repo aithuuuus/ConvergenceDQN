@@ -10,13 +10,14 @@ def parse_args():
     parser.add_argument('--learning-rate', default=0.01, \
         type=float)
     parser.add_argument('--skip-frame', default=3, type=int)
-    parser.add_argument('--task', default='ALE/Pong-v4')
+    parser.add_argument('--buffer-size', default=2000, type=int)
+    parser.add_argument('--task', default='ALE/Pong-v5')
     parser.add_argument('--obs-merge', default=3, type=int, 
         help='merge the neibor obs')
     parser.add_argument('--frame', default=84, type=int)
     parser.add_argument('--train-parallel', default=8, \
         type=int, help='the nunmber of the training prarallel')
-    parser.add_argument('--test-parallel', default=0, type=int, 
+    parser.add_argument('--test-parallel', default=8, type=int, 
         help='the number of the model used to test the perfermace of the model parallely')
     parser.add_argument('--discount-rate', default=0.99, type=float, 
         help='the discount rate of the training process')
@@ -26,14 +27,11 @@ def parse_args():
         help='the step used to estimate the value of the action')
     parser.add_argument('--test-per-eps', default=40, type=int, 
         help='test the policy of the agent')
-    parser.add_argument('--is-shallow', action='store_true')
-    parser.add_argument('--origin', action='store_false', 
-        help='whether use the double structure')
-    parser.add_argument('--origin', action='store_false', 
+    parser.add_argument('--is-shallow', action='store_false')
+    parser.add_argument('--origin', action='store_true', 
         help='whether use origin dqn')
-    parser.add_argument('--threshole', default=np.inf, type=float, 
-        help='the thredshold to stop training')
-    parser.add_argument('--save-path', '-p',  default='log', 
+    parser.add_argument('--weight-path', '-w',  default='weight')
+    parser.add_argument('--log-path', '-p',  default='log', 
         help='the path to save the weights, logs')
     parser.add_argument('--batch-size', default=128, type=int)
 

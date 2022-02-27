@@ -9,7 +9,7 @@ from tianshou.data import Batch, ReplayBuffer, to_numpy, to_torch_as
 from tianshou.policy import BasePolicy
 
 
-class DQNPolicy(BasePolicy):
+class CDQNPolicy(BasePolicy):
     """Implementation of Deep Q Network. arXiv:1312.5602.
 
     Implementation of Double Q-Learning. arXiv:1509.06461.
@@ -44,7 +44,7 @@ class DQNPolicy(BasePolicy):
         reward_normalization: bool = False,
         is_double: bool = True,
         # modified
-        threshold=0.005
+        threshold=0.005, 
         max_step=300, 
         **kwargs: Any,
     ) -> None:
