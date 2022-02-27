@@ -170,28 +170,26 @@ class CDQNPolicy(BasePolicy):
         # modified
         if self._target and self._iter % self._freq == 0:
             self.sync_weight()
-        cnt = True
         step = 0
         while True:
             step += 1
             self.optim.zero_grad()
-            weight = batch.pop("weight", 1.0)
+            if step == 1:
+                weight = batch.pop("weight", 1.0)
             q = self(batch).logits
             q = q[np.arange(len(q)), batch.act]
             returns = to_torch_as(batch.returns.flatten(), q)
             td_error = returns - q
             loss = (td_error.pow(2) * weight).mean()
-            if cnt:
-                cnt = False
-                first_loss = deepcopy(loss)
-                first_td_error = td_error
+            if step == 1:
+                first_loss = loss.item()
+                batch.weight = td_error  # prio-buffer
             loss.backward()
             self.optim.step()
             if loss.item() < self.threshold or step >self.max_step:
                 break
-        batch.weight = first_td_error  # prio-buffer
         self._iter += 1
-        return {"loss": first_loss.item()}
+        return {"loss": first_loss}
 
     def exploration_noise(self, act: Union[np.ndarray, Batch],
                           batch: Batch) -> Union[np.ndarray, Batch]:
