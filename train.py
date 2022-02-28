@@ -9,6 +9,8 @@ from lib.wrappers import make_env
 from lib.model import ShallowNet
 from lib.parser import parse_args
 from lib.policy.cdqn import CDQNPolicy
+from lib.collector import Collector
+from lib.offpolicy import offpolicy_trainer
 
 import tianshou as ts
 from tianshou.utils import TensorboardLogger
@@ -38,16 +40,18 @@ if args.origin:
     policy = ts.policy.DQNPolicy(net, optim, \
         discount_factor=args.discount_rate, 
         estimation_step=args.obs_merge, 
-        target_update_freq=args.sync_steps
+        target_update_freq=args.sync_steps, 
+        max_step=args.max_step, 
     )
 else:
     policy = CDQNPolicy(net, optim, \
         discount_factor=args.discount_rate, 
         estimation_step=args.obs_merge, 
-        target_update_freq=args.sync_steps
+        target_update_freq=args.sync_steps, 
+        max_step=args.max_step, 
     )
 
-train_collector = ts.data.Collector(
+train_collector = Collector(
     policy, train_envs, \
     ts.data.VectorReplayBuffer(args.buffer_size, args.batch_size), 
     exploration_noise=True)
@@ -57,12 +61,12 @@ test_collector = ts.data.Collector(
 writer = SummaryWriter('log/'+args.log_path)
 logger = TensorboardLogger(writer)
 
-result = ts.trainer.offpolicy_trainer(
+result = offpolicy_trainer(
         policy, train_collector, test_collector, 
         max_epoch=50, step_per_epoch=10000, step_per_collect=8, 
         update_per_step=0.1, episode_per_test=3, 
         batch_size=args.batch_size, 
-        logger=logger)
+        logger=logger, writer=writer)
 
 if not os.path.exists('./weights/{}'.format(args.weight_path)):
     os.makedirs('./weights/{}'.format(args.weight_path), exist_ok=True)

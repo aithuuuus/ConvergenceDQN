@@ -34,6 +34,7 @@ def parse_args():
     parser.add_argument('--log-path', '-p',  default='log', 
         help='the path to save the weights, logs')
     parser.add_argument('--batch-size', default=128, type=int)
+    parser.add_argument('--max-step', default=300, type=int)
 
     args = parser.parse_args()
     return args
