@@ -335,6 +335,9 @@ class Collector(object):
             rews, lens, idxs = np.array([]), np.array([], int), np.array([], int)
             rew_mean = rew_std = len_mean = len_std = 0
 
+        # modified 
+        score = np.array([s['score'] for s in info])
+
         return {
             "n/ep": episode_count,
             "n/st": step_count,
@@ -345,6 +348,7 @@ class Collector(object):
             "len": len_mean,
             "rew_std": rew_std,
             "len_std": len_std,
+            "score": score, 
         }
 
 

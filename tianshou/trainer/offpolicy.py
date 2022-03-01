@@ -125,12 +125,15 @@ def offpolicy_trainer(
                 logger.log_train_data(result, env_step)
                 last_rew = result['rew'] if result["n/ep"] > 0 else last_rew
                 last_len = result['len'] if result["n/ep"] > 0 else last_len
+                # modified
                 data = {
                     "env_step": str(env_step),
                     "rew": f"{last_rew:.2f}",
                     "len": str(int(last_len)),
                     "n/ep": str(int(result["n/ep"])),
                     "n/st": str(int(result["n/st"])),
+                    "sco_mean": f"{result['score'].mean():.2f}",
+                    "sco_std": f"{result['score'].std():.2f}",
                 }
                 if result["n/ep"] > 0:
                     if test_in_train and stop_fn and stop_fn(result["rew"]):
