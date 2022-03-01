@@ -134,7 +134,7 @@ def offpolicy_trainer(
                     "n/st": str(int(result["n/st"])),
                     "sco_mean": f"{result['score'].mean():.2f}",
                     "sco_std": f"{result['score'].std():.2f}",
-                    "sco": f"{result['score'][0]:.2f}",
+                    "sco": f"{result['score'][0]}",
                 }
                 if result["n/ep"] > 0:
                     if test_in_train and stop_fn and stop_fn(result["rew"]):
