@@ -9,8 +9,6 @@ from lib.wrappers import make_env
 from lib.model import ShallowNet
 from lib.parser import parse_args
 from lib.policy.cdqn import CDQNPolicy
-from lib.collector import Collector
-from lib.offpolicy import offpolicy_trainer
 
 import tianshou as ts
 from tianshou.utils import TensorboardLogger
@@ -41,7 +39,6 @@ if args.origin:
         discount_factor=args.discount_rate, 
         estimation_step=args.obs_merge, 
         target_update_freq=args.sync_steps, 
-        max_step=args.max_step, 
     )
 else:
     policy = CDQNPolicy(net, optim, \
