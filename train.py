@@ -1,3 +1,4 @@
+import os
 import gym
 import numpy as np
 
@@ -48,24 +49,28 @@ else:
         max_step=args.max_step, 
     )
 
-train_collector = Collector(
+train_collector = ts.data.Collector(
     policy, train_envs, \
     ts.data.VectorReplayBuffer(args.buffer_size, args.batch_size), 
     exploration_noise=True)
 test_collector = ts.data.Collector(
     policy, test_envs, exploration_noise=False)
 
-writer = SummaryWriter('log/'+args.log_path)
-logger = TensorboardLogger(writer)
+writer = SummaryWriter('log/'+args.logdir)
+logger = TensorboardLogger(
+    writer, train_interval=1, update_interval=1)
 
-result = offpolicy_trainer(
+if not os.path.exists('./weights/{}'.format(args.logdir)):
+    os.makedirs('./weights/{}'.format(args.logdir), exist_ok=True)
+
+def save_fn(policy):
+    torch.save(policy.state_dict(), './weights/{}/weights.pth'.format(args.logdir))
+
+result = ts.trainer.offpolicy_trainer(
         policy, train_collector, test_collector, 
         max_epoch=50, step_per_epoch=10000, step_per_collect=8, 
-        update_per_step=0.1, episode_per_test=3, 
+        update_per_step=1, episode_per_test=3, 
         batch_size=args.batch_size, 
-        logger=logger, writer=writer)
+        logger=logger, save_fn=save_fn)
 
-if not os.path.exists('./weights/{}'.format(args.weight_path)):
-    os.makedirs('./weights/{}'.format(args.weight_path), exist_ok=True)
 
-torch.save(policy.state_dict(), './weights/{}/weights.pth'.format(args.name))

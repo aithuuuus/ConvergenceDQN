@@ -30,8 +30,7 @@ def parse_args():
     parser.add_argument('--is-shallow', action='store_false')
     parser.add_argument('--origin', action='store_true', 
         help='whether use origin dqn')
-    parser.add_argument('--weight-path', '-w',  default='weight')
-    parser.add_argument('--log-path', '-p',  default='log', 
+    parser.add_argument('--logdir', '-p',  default='log', 
         help='the path to save the weights, logs')
     parser.add_argument('--batch-size', default=128, type=int)
     parser.add_argument('--max-step', default=300, type=int)
