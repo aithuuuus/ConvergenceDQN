@@ -25,7 +25,7 @@ def parse_args():
         help='the step to sync the trained net to target net')
     parser.add_argument('--n-step', default=3, type=int, 
         help='the step used to estimate the value of the action')
-    parser.add_argument('--test-per-eps', default=40, type=int, 
+    parser.add_argument('--test-per-eps', default=5, type=int, 
         help='test the policy of the agent')
     parser.add_argument('--is-shallow', action='store_false')
     parser.add_argument('--origin', action='store_true', 
