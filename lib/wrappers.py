@@ -93,6 +93,19 @@ class MaxAndSkip(gym.Wrapper):
         self._obs_buffer.append(obs)
         return obs
 
+class ShowCurrentScore(gym.Wrapper):
+    def step(self, action):
+        obs, rew, done, info = self.env.step(action)
+        self.score += rew
+        info['score'] = self.score
+        return obs, rew, done, info
+
+    def reset(self):
+        self.score = 0
+        obs = self.env.reset()
+        return obs
+
+
 class ScaleFloatFrame(gym.ObservationWrapper):
     def observation(self, obs):
         return obs.astype(np.float32) / 255
@@ -146,12 +159,12 @@ def make_env(
     env = MoveAxis(env)
     env = ScaleFloatFrame(env)
     env = BufferWrapper(env, obs_merge)
+    env = ShowCurrentScore(env)
     return env
 
 if __name__ == '__main__':
     env = make_env()
-    env.random_play()
     obs = env.reset()
-    import matplotlib.pyplot as plt
-    plt.imshow(obs[-1], vmin=0, vmax=1)
-    plt.show()
+    for i in range(100):
+        obs, rew, done, info = env.step(0)
+        print(info)
